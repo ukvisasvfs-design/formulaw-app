@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, Scale } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 const AdvocateLogin = () => {
   const [email, setEmail] = useState('');
@@ -78,24 +78,46 @@ const AdvocateLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #001f3f 0%, #003d7a 100%)' }}>
+      {/* Indian Flag Background */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
+          animation: 'wave 3s ease-in-out infinite'
+        }}></div>
+      </div>
+
+      <style>{`
+        @keyframes wave {
+          0%, 100% { transform: translateX(0) skewX(0deg); }
+          25% { transform: translateX(-5px) skewX(2deg); }
+          75% { transform: translateX(5px) skewX(-2deg); }
+        }
+      `}</style>
+
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
+          {/* Logo */}
           <div className="flex justify-center mb-4">
-            <div className="bg-[#1877f2] p-4 rounded-full">
-              <Scale className="w-12 h-12 text-white" />
-            </div>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/6g8uyqyo_6CA97F72-C87A-4CE5-89BD-678CA36A468C.jpeg" 
+              alt="FormuLAW Logo" 
+              className="h-32 w-auto"
+            />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">FormuLAW</h1>
-          <p className="text-gray-600">Advocate Portal</p>
+          {/* Tagline */}
+          <div className="text-white">
+            <p className="text-lg font-semibold mb-1">Legal help made simple</p>
+            <p className="text-sm font-medium">Say it • Seek it • Sorted</p>
+          </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Advocate Login</CardTitle>
-            <CardDescription>Enter your registered email to receive OTP</CardDescription>
+        <Card className="border-2 border-white shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-[#001f3f] to-[#003d7a] text-white rounded-t-lg">
+            <CardTitle className="text-center">Advocate Login</CardTitle>
+            <CardDescription className="text-gray-200 text-center">Enter your registered email to receive OTP</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <form onSubmit={otpSent ? verifyOTP : sendOTP} className="space-y-4">
               <div>
                 <Label htmlFor="email">Email Address</Label>
@@ -106,6 +128,7 @@ const AdvocateLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={otpSent}
+                  className="border-gray-300"
                   data-testid="advocate-email-input"
                 />
               </div>
@@ -120,6 +143,7 @@ const AdvocateLogin = () => {
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                     maxLength={6}
+                    className="border-gray-300"
                     data-testid="advocate-otp-input"
                   />
                   <p className="text-sm text-gray-500 mt-1">
@@ -130,7 +154,7 @@ const AdvocateLogin = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-[#1877f2] hover:bg-[#166fe5]"
+                className="w-full bg-[#001f3f] hover:bg-[#003d7a] border-2 border-white"
                 disabled={loading}
                 data-testid="advocate-login-submit-btn"
               >
@@ -150,7 +174,7 @@ const AdvocateLogin = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-2 border-[#001f3f]"
                   onClick={() => {
                     setOtpSent(false);
                     setOtp('');
@@ -164,15 +188,15 @@ const AdvocateLogin = () => {
           </CardContent>
         </Card>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+        <div className="mt-6 text-center text-white">
+          <p className="text-sm">
             New advocate?{' '}
-            <a href="/advocate/register" className="text-[#1877f2] hover:underline font-medium">
+            <a href="/advocate/register" className="font-bold hover:underline">
               Register here
             </a>
           </p>
-          <p className="text-sm text-gray-600 mt-2">
-            <a href="/client" className="text-[#1877f2] hover:underline font-medium">
+          <p className="text-sm mt-2">
+            <a href="/client" className="font-bold hover:underline">
               Client Portal
             </a>
           </p>

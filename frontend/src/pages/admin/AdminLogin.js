@@ -73,24 +73,51 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #001f3f 0%, #003d7a 100%)' }}>
+      {/* Indian Flag Background */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
+          animation: 'wave 3s ease-in-out infinite'
+        }}></div>
+      </div>
+
+      <style>{`
+        @keyframes wave {
+          0%, 100% { transform: translateX(0) skewX(0deg); }
+          25% { transform: translateX(-5px) skewX(2deg); }
+          75% { transform: translateX(5px) skewX(-2deg); }
+        }
+      `}</style>
+
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
+          {/* Logo */}
           <div className="flex justify-center mb-4">
-            <div className="bg-red-600 p-4 rounded-full">
-              <Shield className="w-12 h-12 text-white" />
+            <img 
+              src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/6g8uyqyo_6CA97F72-C87A-4CE5-89BD-678CA36A468C.jpeg" 
+              alt="FormuLAW Logo" 
+              className="h-32 w-auto"
+            />
+          </div>
+          {/* Tagline */}
+          <div className="text-white">
+            <p className="text-lg font-semibold mb-1">Legal help made simple</p>
+            <p className="text-sm font-medium">Say it • Seek it • Sorted</p>
+          </div>
+          <div className="mt-4 flex justify-center">
+            <div className="bg-red-600 p-3 rounded-full border-2 border-white">
+              <Shield className="w-8 h-8 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">FormuLAW</h1>
-          <p className="text-gray-300">Admin Portal</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Admin Login</CardTitle>
-            <CardDescription>Secure access for administrators only</CardDescription>
+        <Card className="border-2 border-white shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-red-700 to-red-800 text-white rounded-t-lg">
+            <CardTitle className="text-center">Admin Login</CardTitle>
+            <CardDescription className="text-gray-200 text-center">Secure access for administrators only</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <form onSubmit={otpSent ? verifyOTP : sendOTP} className="space-y-4">
               <div>
                 <Label htmlFor="email">Admin Email</Label>
@@ -101,6 +128,7 @@ const AdminLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={otpSent}
+                  className="border-gray-300"
                   data-testid="admin-email-input"
                 />
               </div>
@@ -115,6 +143,7 @@ const AdminLogin = () => {
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                     maxLength={6}
+                    className="border-gray-300"
                     data-testid="admin-otp-input"
                   />
                   <p className="text-sm text-gray-500 mt-1">
@@ -125,7 +154,7 @@ const AdminLogin = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-red-600 hover:bg-red-700"
+                className="w-full bg-red-600 hover:bg-red-700 border-2 border-white"
                 disabled={loading}
                 data-testid="admin-login-submit-btn"
               >
@@ -145,7 +174,7 @@ const AdminLogin = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
+                  className="w-full border-2 border-red-600"
                   onClick={() => {
                     setOtpSent(false);
                     setOtp('');
@@ -166,7 +195,7 @@ const AdminLogin = () => {
         </Card>
 
         <div className="mt-6 text-center">
-          <a href="/client" className="text-gray-300 hover:text-white text-sm">
+          <a href="/client" className="text-white hover:underline text-sm font-medium">
             ← Back to Client Portal
           </a>
         </div>
