@@ -95,22 +95,44 @@ const AdvocateRegister = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 py-8 px-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen relative overflow-hidden py-8 px-4" style={{ background: 'linear-gradient(135deg, #001f3f 0%, #003d7a 100%)' }}>
+      {/* Indian Flag Background */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
+          animation: 'wave 3s ease-in-out infinite'
+        }}></div>
+      </div>
+
+      <style>{`
+        @keyframes wave {
+          0%, 100% { transform: translateX(0) skewX(0deg); }
+          25% { transform: translateX(-5px) skewX(2deg); }
+          75% { transform: translateX(5px) skewX(-2deg); }
+        }
+      `}</style>
+
+      <div className="max-w-3xl mx-auto relative z-10">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-[#1877f2] p-4 rounded-full">
-              <Scale className="w-12 h-12 text-white" />
-            </div>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/6g8uyqyo_6CA97F72-C87A-4CE5-89BD-678CA36A468C.jpeg" 
+              alt="FormuLAW Logo" 
+              className="h-32 w-auto"
+            />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Join FormuLAW</h1>
-          <p className="text-gray-600">Register as an Advocate</p>
+          <div className="text-white mb-2">
+            <p className="text-lg font-semibold mb-1">Legal help made simple</p>
+            <p className="text-sm font-medium">Say it • Seek it • Sorted</p>
+          </div>
+          <h1 className="text-3xl font-bold text-white mt-4">Join FormuLAW</h1>
+          <p className="text-gray-200">Register as an Advocate</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Advocate Registration</CardTitle>
-            <CardDescription>Fill in your details to register as an advocate</CardDescription>
+        <Card className="border-2 border-white shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-[#001f3f] to-[#003d7a] text-white rounded-t-lg">
+            <CardTitle className="text-center">Advocate Registration</CardTitle>
+            <CardDescription className="text-gray-200 text-center">Fill in your details to register as an advocate</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -328,7 +350,7 @@ const AdvocateRegister = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-[#1877f2] hover:bg-[#166fe5]"
+                className="w-full bg-[#001f3f] hover:bg-[#003d7a] border-2 border-white"
                 disabled={loading}
                 data-testid="register-submit-btn"
               >
@@ -346,9 +368,9 @@ const AdvocateRegister = () => {
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-white">
             Already registered?{' '}
-            <a href="/advocate" className="text-[#1877f2] hover:underline font-medium">
+            <a href="/advocate" className="font-bold hover:underline">
               Login here
             </a>
           </p>
