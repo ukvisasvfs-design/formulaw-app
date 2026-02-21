@@ -95,44 +95,71 @@ const AdvocateRegister = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden py-8 px-4" style={{ background: 'linear-gradient(135deg, #001f3f 0%, #003d7a 100%)' }}>
-      {/* Indian Flag Background */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
-          animation: 'wave 3s ease-in-out infinite'
-        }}></div>
+    <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(to bottom, #f0f2f5 0%, #e9ebee 100%)' }}>
+      {/* Indian Flag Background - Fluttering */}
+      <div className="absolute inset-0 opacity-15 pointer-events-none overflow-hidden">
+        <div 
+          className="absolute inset-0" 
+          style={{
+            background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
+            backgroundSize: '200% 100%',
+            animation: 'flutter 4s ease-in-out infinite'
+          }}
+        ></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-8 border-blue-800 rounded-full opacity-20"></div>
       </div>
 
       <style>{`
-        @keyframes wave {
-          0%, 100% { transform: translateX(0) skewX(0deg); }
-          25% { transform: translateX(-5px) skewX(2deg); }
-          75% { transform: translateX(5px) skewX(-2deg); }
+        @keyframes flutter {
+          0%, 100% { 
+            transform: perspective(400px) rotateY(0deg) translateX(0);
+            background-position: 0% 0%;
+          }
+          25% { 
+            transform: perspective(400px) rotateY(-5deg) translateX(-10px);
+            background-position: -5% 0%;
+          }
+          50% { 
+            transform: perspective(400px) rotateY(0deg) translateX(0);
+            background-position: 0% 0%;
+          }
+          75% { 
+            transform: perspective(400px) rotateY(5deg) translateX(10px);
+            background-position: 5% 0%;
+          }
         }
       `}</style>
 
-      <div className="max-w-3xl mx-auto relative z-10">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
+      {/* Header with Logo and Tagline */}
+      <div className="relative z-10 bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Logo - Left */}
+          <div className="flex items-center">
             <img 
               src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/6g8uyqyo_6CA97F72-C87A-4CE5-89BD-678CA36A468C.jpeg" 
               alt="FormuLAW Logo" 
-              className="h-32 w-auto"
+              className="h-16 w-auto"
             />
           </div>
-          <div className="text-white mb-2">
-            <p className="text-lg font-semibold mb-1">Legal help made simple</p>
-            <p className="text-sm font-medium">Say it • Seek it • Sorted</p>
+          
+          {/* Tagline - Right */}
+          <div className="text-right">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#1877f2] leading-tight">Legal help made simple</h1>
+            <p className="text-sm md:text-base text-gray-600 font-medium mt-1">Say it • Seek it • Sorted</p>
           </div>
-          <h1 className="text-3xl font-bold text-white mt-4">Join FormuLAW</h1>
-          <p className="text-gray-200">Register as an Advocate</p>
+        </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto relative z-10 py-8 px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Join FormuLAW</h2>
+          <p className="text-gray-600 mt-2">Register as an Advocate</p>
         </div>
 
-        <Card className="border-2 border-white shadow-2xl">
-          <CardHeader className="bg-gradient-to-r from-[#001f3f] to-[#003d7a] text-white rounded-t-lg">
-            <CardTitle className="text-center">Advocate Registration</CardTitle>
-            <CardDescription className="text-gray-200 text-center">Fill in your details to register as an advocate</CardDescription>
+        <Card className="shadow-2xl border-2 border-gray-200">
+          <CardHeader className="bg-gradient-to-r from-[#1877f2] to-[#166fe5] text-white">
+            <CardTitle className="text-center text-2xl">Advocate Registration</CardTitle>
+            <CardDescription className="text-gray-100 text-center">Fill in your details to register as an advocate</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -350,7 +377,7 @@ const AdvocateRegister = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-[#001f3f] hover:bg-[#003d7a] border-2 border-white"
+                className="w-full bg-[#1877f2] hover:bg-[#166fe5] text-white py-6 text-lg font-semibold"
                 disabled={loading}
                 data-testid="register-submit-btn"
               >
@@ -368,9 +395,9 @@ const AdvocateRegister = () => {
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-white">
+          <p className="text-sm text-gray-600">
             Already registered?{' '}
-            <a href="/advocate" className="font-bold hover:underline">
+            <a href="/advocate" className="text-[#1877f2] hover:underline font-semibold">
               Login here
             </a>
           </p>
