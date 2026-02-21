@@ -73,131 +73,154 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #001f3f 0%, #003d7a 100%)' }}>
-      {/* Indian Flag Background */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
-          animation: 'wave 3s ease-in-out infinite'
-        }}></div>
+    <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(to bottom, #f0f2f5 0%, #e9ebee 100%)' }}>
+      {/* Indian Flag Background - Fluttering */}
+      <div className="absolute inset-0 opacity-15 pointer-events-none overflow-hidden">
+        <div 
+          className="absolute inset-0" 
+          style={{
+            background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
+            backgroundSize: '200% 100%',
+            animation: 'flutter 4s ease-in-out infinite'
+          }}
+        ></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-8 border-blue-800 rounded-full opacity-20"></div>
       </div>
 
       <style>{`
-        @keyframes wave {
-          0%, 100% { transform: translateX(0) skewX(0deg); }
-          25% { transform: translateX(-5px) skewX(2deg); }
-          75% { transform: translateX(5px) skewX(-2deg); }
+        @keyframes flutter {
+          0%, 100% { 
+            transform: perspective(400px) rotateY(0deg) translateX(0);
+            background-position: 0% 0%;
+          }
+          25% { 
+            transform: perspective(400px) rotateY(-5deg) translateX(-10px);
+            background-position: -5% 0%;
+          }
+          50% { 
+            transform: perspective(400px) rotateY(0deg) translateX(0);
+            background-position: 0% 0%;
+          }
+          75% { 
+            transform: perspective(400px) rotateY(5deg) translateX(10px);
+            background-position: 5% 0%;
+          }
         }
       `}</style>
 
-      <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
-          {/* Logo */}
-          <div className="flex justify-center mb-4">
+      {/* Header with Logo and Tagline */}
+      <div className="relative z-10 bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Logo - Left */}
+          <div className="flex items-center gap-3">
             <img 
               src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/6g8uyqyo_6CA97F72-C87A-4CE5-89BD-678CA36A468C.jpeg" 
               alt="FormuLAW Logo" 
-              className="h-32 w-auto"
+              className="h-16 w-auto"
             />
-          </div>
-          {/* Tagline */}
-          <div className="text-white">
-            <p className="text-lg font-semibold mb-1">Legal help made simple</p>
-            <p className="text-sm font-medium">Say it • Seek it • Sorted</p>
-          </div>
-          <div className="mt-4 flex justify-center">
-            <div className="bg-red-600 p-3 rounded-full border-2 border-white">
-              <Shield className="w-8 h-8 text-white" />
+            <div className="bg-red-600 p-2 rounded-full">
+              <Shield className="w-6 h-6 text-white" />
             </div>
+          </div>
+          
+          {/* Tagline - Right */}
+          <div className="text-right">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#1877f2] leading-tight">Legal help made simple</h1>
+            <p className="text-sm md:text-base text-gray-600 font-medium mt-1">Say it • Seek it • Sorted</p>
           </div>
         </div>
+      </div>
 
-        <Card className="border-2 border-white shadow-2xl">
-          <CardHeader className="bg-gradient-to-r from-red-700 to-red-800 text-white rounded-t-lg">
-            <CardTitle className="text-center">Admin Login</CardTitle>
-            <CardDescription className="text-gray-200 text-center">Secure access for administrators only</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <form onSubmit={otpSent ? verifyOTP : sendOTP} className="space-y-4">
-              <div>
-                <Label htmlFor="email">Admin Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="admin@formulaw.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={otpSent}
-                  className="border-gray-300"
-                  data-testid="admin-email-input"
-                />
+      {/* Login Card - Center */}
+      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-88px)] p-4">
+        <div className="w-full max-w-md">
+          <Card className="shadow-2xl border-2 border-gray-200">
+            <CardHeader className="bg-gradient-to-r from-red-600 to-red-700 text-white">
+              <CardTitle className="text-center text-2xl">Admin Login</CardTitle>
+              <CardDescription className="text-gray-100 text-center">Secure access for administrators only</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6 bg-white">
+              <form onSubmit={otpSent ? verifyOTP : sendOTP} className="space-y-4">
+                <div>
+                  <Label htmlFor="email" className="text-gray-700">Admin Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="admin@formulaw.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={otpSent}
+                    className="border-gray-300 focus:border-red-600 focus:ring-red-600"
+                    data-testid="admin-email-input"
+                  />
+                </div>
+
+                {otpSent && (
+                  <div>
+                    <Label htmlFor="otp" className="text-gray-700">OTP Code</Label>
+                    <Input
+                      id="otp"
+                      type="text"
+                      placeholder="Enter 6-digit OTP"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      maxLength={6}
+                      className="border-gray-300 focus:border-red-600 focus:ring-red-600"
+                      data-testid="admin-otp-input"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      {countdown > 0 ? `OTP expires in ${countdown}s` : 'OTP expired'}
+                    </p>
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-6 text-lg font-semibold"
+                  disabled={loading}
+                  data-testid="admin-login-submit-btn"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Please wait...
+                    </>
+                  ) : otpSent ? (
+                    'Verify OTP'
+                  ) : (
+                    'Send OTP'
+                  )}
+                </Button>
+
+                {otpSent && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full border-2 border-red-600 text-red-600 hover:bg-red-50"
+                    onClick={() => {
+                      setOtpSent(false);
+                      setOtp('');
+                      setCountdown(60);
+                    }}
+                  >
+                    Change Email
+                  </Button>
+                )}
+              </form>
+
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                <p className="text-xs text-yellow-800">
+                  <strong>Default Admin:</strong> admin@formulaw.com
+                </p>
               </div>
 
-              {otpSent && (
-                <div>
-                  <Label htmlFor="otp">OTP Code</Label>
-                  <Input
-                    id="otp"
-                    type="text"
-                    placeholder="Enter 6-digit OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    maxLength={6}
-                    className="border-gray-300"
-                    data-testid="admin-otp-input"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    {countdown > 0 ? `OTP expires in ${countdown}s` : 'OTP expired'}
-                  </p>
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 border-2 border-white"
-                disabled={loading}
-                data-testid="admin-login-submit-btn"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Please wait...
-                  </>
-                ) : otpSent ? (
-                  'Verify OTP'
-                ) : (
-                  'Send OTP'
-                )}
-              </Button>
-
-              {otpSent && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full border-2 border-red-600"
-                  onClick={() => {
-                    setOtpSent(false);
-                    setOtp('');
-                    setCountdown(60);
-                  }}
-                >
-                  Change Email
-                </Button>
-              )}
-            </form>
-
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
-              <p className="text-xs text-yellow-800">
-                <strong>Default Admin:</strong> admin@formulaw.com
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="mt-6 text-center">
-          <a href="/client" className="text-white hover:underline text-sm font-medium">
-            ← Back to Client Portal
-          </a>
+              <div className="mt-4 text-center">
+                <a href="/client" className="text-[#1877f2] hover:underline text-sm font-semibold">
+                  ← Back to Client Portal
+                </a>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
