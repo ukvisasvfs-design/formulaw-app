@@ -265,9 +265,9 @@ sudo supervisorctl status
 
 ### Access the Portals
 
-1. **Client Portal**: https://formulaw-admin.preview.emergentagent.com/client
-2. **Advocate Portal**: https://formulaw-admin.preview.emergentagent.com/advocate
-3. **Admin Portal**: https://formulaw-admin.preview.emergentagent.com/admin
+1. **Client Portal**: https://formulaw-legal.preview.emergentagent.com/client
+2. **Advocate Portal**: https://formulaw-legal.preview.emergentagent.com/advocate
+3. **Admin Portal**: https://formulaw-legal.preview.emergentagent.com/admin
 
 ### Default Admin Credentials
 - **Email**: admin@formulaw.com
