@@ -93,6 +93,25 @@ const ClientHome = () => {
     }
   };
 
+  // Show loading state while auth is loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
+        <div 
+          className="fixed inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: 'url(https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/kwn9gg7f_1BE7EC66-F614-49CE-9066-FEEE09EE1754.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-amber-900/40"></div>
+        </div>
+        <p className="relative z-10 text-white text-xl">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col">
       {/* Background Image with Overlay */}
