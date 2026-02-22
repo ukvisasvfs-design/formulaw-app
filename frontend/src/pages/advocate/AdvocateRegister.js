@@ -95,71 +95,64 @@ const AdvocateRegister = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(to bottom, #f0f2f5 0%, #e9ebee 100%)' }}>
-      {/* Indian Flag Background - Fluttering */}
-      <div className="absolute inset-0 opacity-15 pointer-events-none overflow-hidden">
-        <div 
-          className="absolute inset-0" 
-          style={{
-            background: 'linear-gradient(to bottom, #FF9933 33.33%, #FFFFFF 33.33%, #FFFFFF 66.66%, #138808 66.66%)',
-            backgroundSize: '200% 100%',
-            animation: 'flutter 4s ease-in-out infinite'
-          }}
-        ></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-8 border-blue-800 rounded-full opacity-20"></div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: 'url(https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/kwn9gg7f_1BE7EC66-F614-49CE-9066-FEEE09EE1754.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-amber-900/40"></div>
       </div>
 
-      <style>{`
-        @keyframes flutter {
-          0%, 100% { 
-            transform: perspective(400px) rotateY(0deg) translateX(0);
-            background-position: 0% 0%;
-          }
-          25% { 
-            transform: perspective(400px) rotateY(-5deg) translateX(-10px);
-            background-position: -5% 0%;
-          }
-          50% { 
-            transform: perspective(400px) rotateY(0deg) translateX(0);
-            background-position: 0% 0%;
-          }
-          75% { 
-            transform: perspective(400px) rotateY(5deg) translateX(10px);
-            background-position: 5% 0%;
-          }
-        }
-      `}</style>
-
-      {/* Header with Logo and Tagline */}
-      <div className="relative z-10 bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo - Left */}
-          <div className="flex items-center">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/6g8uyqyo_6CA97F72-C87A-4CE5-89BD-678CA36A468C.jpeg" 
-              alt="FormuLAW Logo" 
-              className="h-16 w-auto"
-            />
-          </div>
-          
-          {/* Tagline - Right */}
-          <div className="text-right">
-            <h1 className="text-2xl md:text-3xl font-bold text-[#1877f2] leading-tight">Legal help made simple</h1>
-            <p className="text-sm md:text-base text-gray-600 font-medium mt-1">Say it • Seek it • Sorted</p>
+      {/* Header Navigation */}
+      <nav className="relative z-10 bg-gradient-to-r from-black/40 to-transparent backdrop-blur-sm border-b border-amber-900/20">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo - Left */}
+            <div className="flex items-center gap-4">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/40evjnjx_F8F86B73-D0A4-48D1-939C-FFE50AD8BAEC.jpeg" 
+                alt="FormuLAW" 
+                className="h-14 w-auto"
+              />
+            </div>
+            
+            {/* Navigation Links - Right */}
+            <div className="hidden md:flex items-center gap-6">
+              <a href="#join" className="text-white/90 hover:text-amber-400 transition-colors text-sm font-medium">
+                Join the Club
+              </a>
+              <a href="#about" className="text-white/90 hover:text-amber-400 transition-colors text-sm font-medium">
+                About Us
+              </a>
+              <a href="#contact" className="text-white/90 hover:text-amber-400 transition-colors text-sm font-medium">
+                Contact Us
+              </a>
+              <a 
+                href="/advocate" 
+                className="px-4 py-2 border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-white rounded-lg transition-all text-sm font-medium"
+              >
+                Sign In
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
       <div className="max-w-3xl mx-auto relative z-10 py-8 px-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Join FormuLAW</h2>
-          <p className="text-gray-600 mt-2">Register as an Advocate</p>
+          <h2 className="text-4xl font-light text-white mb-2">Join <span className="font-serif italic text-amber-400">FormuLAW</span></h2>
+          <p className="text-white/80 font-light">Register as a legal professional</p>
         </div>
 
-        <Card className="shadow-2xl border-2 border-gray-200">
-          <CardHeader className="bg-gradient-to-r from-[#1877f2] to-[#166fe5] text-white">
-            <CardTitle className="text-center text-2xl">Advocate Registration</CardTitle>
-            <CardDescription className="text-gray-100 text-center">Fill in your details to register as an advocate</CardDescription>
+        <Card className="bg-white/95 backdrop-blur-lg shadow-2xl border-0">
+          <CardHeader className="bg-gradient-to-r from-amber-800 to-amber-900 text-white pb-8">
+            <CardTitle className="text-center text-2xl font-light tracking-wide">Professional Registration</CardTitle>
+            <CardDescription className="text-amber-100 text-center font-light">Complete your advocate profile</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -377,7 +370,7 @@ const AdvocateRegister = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-[#1877f2] hover:bg-[#166fe5] text-white py-6 text-lg font-semibold"
+                className="w-full bg-gradient-to-r from-amber-700 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-white py-6 text-lg font-medium tracking-wide shadow-lg"
                 disabled={loading}
                 data-testid="register-submit-btn"
               >
@@ -395,10 +388,10 @@ const AdvocateRegister = () => {
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-white/90">
             Already registered?{' '}
-            <a href="/advocate" className="text-[#1877f2] hover:underline font-semibold">
-              Login here
+            <a href="/advocate" className="text-amber-400 hover:text-amber-300 font-semibold">
+              Sign in here
             </a>
           </p>
         </div>
