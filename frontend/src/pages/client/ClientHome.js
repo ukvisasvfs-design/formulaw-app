@@ -34,6 +34,7 @@ const ClientHome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (loading) return; // Wait for auth to load
     if (!user || user.role !== 'client') {
       navigate('/client');
       return;
@@ -41,7 +42,8 @@ const ClientHome = () => {
     fetchUtilityData();
     fetchWallet();
     fetchAdvocates();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, user]);
 
   useEffect(() => {
     if (user) {
