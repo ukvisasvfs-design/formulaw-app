@@ -30,11 +30,11 @@ const ClientHome = () => {
   });
   const [loading, setLoading] = useState(true);
   const [walletBalance, setWalletBalance] = useState(0);
-  const { user, logout, axios } = useAuth();
+  const { user, logout, axios, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loading) return; // Wait for auth to load
+    if (authLoading) return; // Wait for auth to load
     if (!user || user.role !== 'client') {
       navigate('/client');
       return;
@@ -43,7 +43,7 @@ const ClientHome = () => {
     fetchWallet();
     fetchAdvocates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, user]);
+  }, [authLoading, user]);
 
   useEffect(() => {
     if (user) {
