@@ -422,6 +422,26 @@ const AdvocateRegister = () => {
           </p>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 bg-black/60 backdrop-blur-md border-t border-amber-900/30 py-6 mt-8">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="space-y-1">
+              <a href="#about" className="block text-white/80 hover:text-amber-400 text-sm transition-colors">
+                About Us
+              </a>
+              <a href="#contact" className="block text-white/80 hover:text-amber-400 text-sm transition-colors">
+                Contact Us
+              </a>
+            </div>
+            <div className="w-16 h-px bg-amber-600/50"></div>
+            <p className="text-white/60 text-xs">
+              © 2026 All rights reserved. FormuLAW - Legal Consultation Platform
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
