@@ -85,7 +85,7 @@ const AdvocateLogin = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden flex flex-col">
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -109,45 +109,31 @@ const AdvocateLogin = () => {
       `}</style>
 
       <nav className="relative z-10 bg-gradient-to-r from-black/50 to-transparent backdrop-blur-md border-b border-amber-900/30">
-        <div className="max-w-7xl mx-auto px-6 py-3">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/40evjnjx_F8F86B73-D0A4-48D1-939C-FFE50AD8BAEC.jpeg" 
-                alt="FormuLAW" 
-                className="h-10 w-auto filter drop-shadow-lg hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div className="flex items-center gap-6">
-              <a href="#about" className="text-white/90 hover:text-amber-400 transition-all text-sm font-medium tracking-wide">
-                About Us
-              </a>
-              <a href="#contact" className="text-white/90 hover:text-amber-400 transition-all text-sm font-medium tracking-wide">
-                Contact Us
-              </a>
-              <a 
-                href="/advocate/register" 
-                className="px-5 py-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-500 hover:to-amber-600 rounded-lg transition-all text-sm font-semibold shadow-lg hover:shadow-xl"
-              >
-                User Sign Up
-              </a>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/40evjnjx_F8F86B73-D0A4-48D1-939C-FFE50AD8BAEC.jpeg" 
+              alt="FormuLAW" 
+              className="h-16 w-auto object-contain filter brightness-110 contrast-110 drop-shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer"
+            />
+            <div className="text-right">
+              <p className="text-white text-lg md:text-xl font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>
+                Legal help, <span className="font-light italic">made easy</span>
+              </p>
             </div>
           </div>
         </div>
       </nav>
 
-      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-80px)] p-4">
+      <div className="relative z-10 flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-extralight text-white mb-3 tracking-wide">
-              Professional <span className="font-light italic">legal services</span>
-            </h1>
-            <div className="flex items-center justify-center gap-3 text-lg md:text-xl">
-              <span className="text-amber-400 font-semibold animate-pulse">Say it</span>
-              <span className="text-amber-500">•</span>
-              <span className="text-amber-400 font-semibold animate-pulse" style={{ animationDelay: '0.2s' }}>Seek it</span>
-              <span className="text-amber-500">•</span>
-              <span className="text-amber-400 font-semibold animate-pulse" style={{ animationDelay: '0.4s' }}>Sorted</span>
+            <div className="flex items-center justify-center gap-3 text-2xl md:text-3xl">
+              <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA' }}>Say it</span>
+              <span className="text-purple-300" style={{ color: '#C4B5FD' }}>•</span>
+              <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA', animationDelay: '0.2s' }}>Seek it</span>
+              <span className="text-purple-300" style={{ color: '#C4B5FD' }}>•</span>
+              <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA', animationDelay: '0.4s' }}>Sorted</span>
             </div>
           </div>
 
@@ -259,6 +245,25 @@ const AdvocateLogin = () => {
           </Card>
         </div>
       </div>
+
+      <footer className="relative z-10 bg-black/60 backdrop-blur-md border-t border-amber-900/30 py-6">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="space-y-1">
+              <a href="#about" className="block text-white/80 hover:text-amber-400 text-sm transition-colors">
+                About Us
+              </a>
+              <a href="#contact" className="block text-white/80 hover:text-amber-400 text-sm transition-colors">
+                Contact Us
+              </a>
+            </div>
+            <div className="w-16 h-px bg-amber-600/50"></div>
+            <p className="text-white/60 text-xs">
+              © 2026 All rights reserved. FormuLAW - Legal Consultation Platform
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
