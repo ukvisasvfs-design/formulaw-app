@@ -128,46 +128,32 @@ const AdvocateRegister = () => {
       <nav className="relative z-10 bg-gradient-to-r from-black/50 to-transparent backdrop-blur-md border-b border-amber-900/30">
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            {/* Logo - Left - Smaller & Stylish */}
-            <div className="flex items-center">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/40evjnjx_F8F86B73-D0A4-48D1-939C-FFE50AD8BAEC.jpeg" 
-                alt="FormuLAW" 
-                className="h-10 w-auto filter drop-shadow-lg hover:scale-105 transition-transform duration-300"
-              />
-            </div>
+            {/* Logo - Left */}
+            <img 
+              src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/40evjnjx_F8F86B73-D0A4-48D1-939C-FFE50AD8BAEC.jpeg" 
+              alt="FormuLAW" 
+              className="h-12 w-auto object-contain filter brightness-110 contrast-110 drop-shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer"
+            />
             
-            {/* Navigation Links - Right */}
-            <div className="flex items-center gap-6">
-              <a href="#about" className="text-white/90 hover:text-amber-400 transition-all text-sm font-medium tracking-wide">
-                About Us
-              </a>
-              <a href="#contact" className="text-white/90 hover:text-amber-400 transition-all text-sm font-medium tracking-wide">
-                Contact Us
-              </a>
-              <a 
-                href="/advocate" 
-                className="px-5 py-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-500 hover:to-amber-600 rounded-lg transition-all text-sm font-semibold shadow-lg hover:shadow-xl"
-              >
-                Sign In
-              </a>
+            {/* Tagline - Right */}
+            <div className="text-right">
+              <p className="text-white text-lg md:text-xl font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>
+                Legal help, <span className="font-light italic">made easy</span>
+              </p>
             </div>
           </div>
         </div>
       </nav>
 
       <div className="max-w-3xl mx-auto relative z-10 py-8 px-4">
-        {/* Tagline Above Form - Modern Look */}
+        {/* Tagline Above Form - Purple Color */}
         <div className="text-center mb-8">
-          <h2 className="text-4xl md:text-5xl font-extralight text-white mb-3 tracking-wide">
-            Join the <span className="font-light italic">legal community</span>
-          </h2>
-          <div className="flex items-center justify-center gap-3 text-lg md:text-xl">
-            <span className="text-amber-400 font-semibold animate-pulse">Say it</span>
-            <span className="text-amber-500">•</span>
-            <span className="text-amber-400 font-semibold animate-pulse" style={{ animationDelay: '0.2s' }}>Seek it</span>
-            <span className="text-amber-500">•</span>
-            <span className="text-amber-400 font-semibold animate-pulse" style={{ animationDelay: '0.4s' }}>Sorted</span>
+          <div className="flex items-center justify-center gap-3 text-2xl md:text-3xl">
+            <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA' }}>Say it</span>
+            <span className="text-purple-300" style={{ color: '#C4B5FD' }}>•</span>
+            <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA', animationDelay: '0.2s' }}>Seek it</span>
+            <span className="text-purple-300" style={{ color: '#C4B5FD' }}>•</span>
+            <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA', animationDelay: '0.4s' }}>Sorted</span>
           </div>
         </div>
 
