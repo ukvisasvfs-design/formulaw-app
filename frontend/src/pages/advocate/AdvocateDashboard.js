@@ -21,17 +21,19 @@ const AdvocateDashboard = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updatingDuty, setUpdatingDuty] = useState(false);
-  const { user, logout, axios } = useAuth();
+  const { user, logout, axios, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (authLoading) return; // Wait for auth to load
     if (!user || user.role !== 'advocate') {
       navigate('/advocate');
       return;
     }
     fetchDashboard();
     fetchProfile();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, user]);
 
   const fetchDashboard = async () => {
     try {
