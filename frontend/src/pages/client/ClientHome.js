@@ -222,12 +222,12 @@ const ClientHome = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-2 block text-gray-700">Law Type</label>
-                  <Select value={filters.law_type} onValueChange={(value) => setFilters({...filters, law_type: value})}>
+                  <Select value={filters.law_type || "all"} onValueChange={(value) => setFilters({...filters, law_type: value === "all" ? "" : value})}>
                     <SelectTrigger data-testid="law-type-filter" className="border-gray-300">
                       <SelectValue placeholder="All Types" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Types</SelectItem>
+                      <SelectItem value="all">All Types</SelectItem>
                       {lawTypes.map(type => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                       ))}
@@ -237,12 +237,12 @@ const ClientHome = () => {
 
                 <div>
                   <label className="text-sm font-medium mb-2 block text-gray-700">City</label>
-                  <Select value={filters.city} onValueChange={(value) => setFilters({...filters, city: value})}>
+                  <Select value={filters.city || "all"} onValueChange={(value) => setFilters({...filters, city: value === "all" ? "" : value})}>
                     <SelectTrigger data-testid="city-filter" className="border-gray-300">
                       <SelectValue placeholder="All Cities" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Cities</SelectItem>
+                      <SelectItem value="all">All Cities</SelectItem>
                       {cities.map(city => (
                         <SelectItem key={city} value={city}>{city}</SelectItem>
                       ))}
@@ -252,12 +252,12 @@ const ClientHome = () => {
 
                 <div>
                   <label className="text-sm font-medium mb-2 block text-gray-700">Language</label>
-                  <Select value={filters.language} onValueChange={(value) => setFilters({...filters, language: value})}>
+                  <Select value={filters.language || "all"} onValueChange={(value) => setFilters({...filters, language: value === "all" ? "" : value})}>
                     <SelectTrigger data-testid="language-filter" className="border-gray-300">
                       <SelectValue placeholder="All Languages" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Languages</SelectItem>
+                      <SelectItem value="all">All Languages</SelectItem>
                       {languages.map(lang => (
                         <SelectItem key={lang} value={lang}>{lang}</SelectItem>
                       ))}
