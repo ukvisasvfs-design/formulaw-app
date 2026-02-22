@@ -105,16 +105,23 @@ const ClientLogin = () => {
         }
       `}</style>
 
-      {/* Header Navigation - Clean & Simple */}
+      {/* Header Navigation - Logo Left, Tagline Right */}
       <nav className="relative z-10 bg-gradient-to-r from-black/50 to-transparent backdrop-blur-md border-b border-amber-900/30">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center">
+          <div className="flex items-center justify-between">
             {/* Logo - Left - Free Size, Cool Look */}
             <img 
               src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/40evjnjx_F8F86B73-D0A4-48D1-939C-FFE50AD8BAEC.jpeg" 
               alt="FormuLAW" 
               className="h-16 w-auto object-contain filter brightness-110 contrast-110 drop-shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer"
             />
+            
+            {/* Tagline - Right - Arial Font */}
+            <div className="text-right">
+              <p className="text-white text-lg md:text-xl font-normal" style={{ fontFamily: 'Arial, sans-serif' }}>
+                Legal help, <span className="font-light italic">made easy</span>
+              </p>
+            </div>
           </div>
         </div>
       </nav>
@@ -122,17 +129,14 @@ const ClientLogin = () => {
       {/* Main Content - Centered */}
       <div className="relative z-10 flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          {/* Tagline Above Login Box - Courier Font */}
+          {/* Say it • Seek it • Sorted - Single Purple Color */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-light text-white mb-4 tracking-wider" style={{ fontFamily: 'Courier New, Courier, monospace' }}>
-              Legal help <span className="italic">made simple</span>
-            </h1>
-            <div className="flex items-center justify-center gap-3 text-lg md:text-xl">
-              <span className="text-emerald-400 font-bold animate-pulse">Say it</span>
-              <span className="text-amber-400">•</span>
-              <span className="text-sky-400 font-bold animate-pulse" style={{ animationDelay: '0.2s' }}>Seek it</span>
-              <span className="text-amber-400">•</span>
-              <span className="text-rose-400 font-bold animate-pulse" style={{ animationDelay: '0.4s' }}>Sorted</span>
+            <div className="flex items-center justify-center gap-3 text-2xl md:text-3xl">
+              <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA' }}>Say it</span>
+              <span className="text-purple-300" style={{ color: '#C4B5FD' }}>•</span>
+              <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA', animationDelay: '0.2s' }}>Seek it</span>
+              <span className="text-purple-300" style={{ color: '#C4B5FD' }}>•</span>
+              <span className="text-purple-400 font-bold animate-pulse" style={{ color: '#A78BFA', animationDelay: '0.4s' }}>Sorted</span>
             </div>
           </div>
 
