@@ -34,6 +34,7 @@ const AdvocateRegister = () => {
   const [cities, setCities] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hammerAnimate, setHammerAnimate] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,6 +77,9 @@ const AdvocateRegister = () => {
       return;
     }
 
+    setHammerAnimate(true);
+    setTimeout(() => setHammerAnimate(false), 600);
+
     setLoading(true);
     try {
       const response = await axios.post(`${API}/advocate/register`, {
@@ -105,36 +109,45 @@ const AdvocateRegister = () => {
           backgroundPosition: 'center'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-amber-900/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/65 to-amber-900/40"></div>
       </div>
 
+      {/* Hammer Animation Styles */}
+      <style>{`
+        @keyframes hammerStrike {
+          0% { transform: rotate(-20deg) translateY(0); }
+          50% { transform: rotate(5deg) translateY(5px); }
+          100% { transform: rotate(-20deg) translateY(0); }
+        }
+        .hammer-animate {
+          animation: hammerStrike 0.6s ease-in-out;
+        }
+      `}</style>
+
       {/* Header Navigation */}
-      <nav className="relative z-10 bg-gradient-to-r from-black/40 to-transparent backdrop-blur-sm border-b border-amber-900/20">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <nav className="relative z-10 bg-gradient-to-r from-black/50 to-transparent backdrop-blur-md border-b border-amber-900/30">
+        <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            {/* Logo - Left */}
-            <div className="flex items-center gap-4">
+            {/* Logo - Left - Smaller & Stylish */}
+            <div className="flex items-center">
               <img 
                 src="https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/40evjnjx_F8F86B73-D0A4-48D1-939C-FFE50AD8BAEC.jpeg" 
                 alt="FormuLAW" 
-                className="h-14 w-auto"
+                className="h-10 w-auto filter drop-shadow-lg hover:scale-105 transition-transform duration-300"
               />
             </div>
             
             {/* Navigation Links - Right */}
-            <div className="hidden md:flex items-center gap-6">
-              <a href="#join" className="text-white/90 hover:text-amber-400 transition-colors text-sm font-medium">
-                Join the Club
-              </a>
-              <a href="#about" className="text-white/90 hover:text-amber-400 transition-colors text-sm font-medium">
+            <div className="flex items-center gap-6">
+              <a href="#about" className="text-white/90 hover:text-amber-400 transition-all text-sm font-medium tracking-wide">
                 About Us
               </a>
-              <a href="#contact" className="text-white/90 hover:text-amber-400 transition-colors text-sm font-medium">
+              <a href="#contact" className="text-white/90 hover:text-amber-400 transition-all text-sm font-medium tracking-wide">
                 Contact Us
               </a>
               <a 
                 href="/advocate" 
-                className="px-4 py-2 border border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-white rounded-lg transition-all text-sm font-medium"
+                className="px-5 py-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white hover:from-amber-500 hover:to-amber-600 rounded-lg transition-all text-sm font-semibold shadow-lg hover:shadow-xl"
               >
                 Sign In
               </a>
@@ -144,16 +157,36 @@ const AdvocateRegister = () => {
       </nav>
 
       <div className="max-w-3xl mx-auto relative z-10 py-8 px-4">
+        {/* Tagline Above Form - Modern Look */}
         <div className="text-center mb-8">
-          <h2 className="text-4xl font-light text-white mb-2">Join <span className="font-serif italic text-amber-400">FormuLAW</span></h2>
-          <p className="text-white/80 font-light">Register as a legal professional</p>
+          <h2 className="text-4xl md:text-5xl font-extralight text-white mb-3 tracking-wide">
+            Join the <span className="font-light italic">legal community</span>
+          </h2>
+          <div className="flex items-center justify-center gap-3 text-lg md:text-xl">
+            <span className="text-amber-400 font-semibold animate-pulse">Say it</span>
+            <span className="text-amber-500">•</span>
+            <span className="text-amber-400 font-semibold animate-pulse" style={{ animationDelay: '0.2s' }}>Seek it</span>
+            <span className="text-amber-500">•</span>
+            <span className="text-amber-400 font-semibold animate-pulse" style={{ animationDelay: '0.4s' }}>Sorted</span>
+          </div>
         </div>
 
-        <Card className="bg-white/95 backdrop-blur-lg shadow-2xl border-0">
-          <CardHeader className="bg-gradient-to-r from-amber-800 to-amber-900 text-white pb-8">
-            <CardTitle className="text-center text-2xl font-light tracking-wide">Professional Registration</CardTitle>
-            <CardDescription className="text-amber-100 text-center font-light">Complete your advocate profile</CardDescription>
-          </CardHeader>
+        <Card className="relative overflow-hidden border-0 shadow-2xl">
+          {/* W Logo Background - 40% Opacity */}
+          <div 
+            className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-40 pointer-events-none"
+            style={{
+              backgroundImage: 'url(https://customer-assets.emergentagent.com/job_formulaw-admin/artifacts/9s76vk1a_858AB95A-A3BA-47BB-9FE4-9500C88E643C.png)',
+              backgroundSize: '60%',
+              backgroundPosition: 'center'
+            }}
+          ></div>
+
+          <div className="relative z-10 bg-white/95 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-amber-800/90 to-amber-900/90 text-white pb-6 pt-6">
+              <CardTitle className="text-center text-2xl font-light tracking-wider">Professional Registration</CardTitle>
+              <CardDescription className="text-amber-100 text-center font-light text-sm">Complete your advocate profile</CardDescription>
+            </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Personal Details */}
@@ -368,23 +401,30 @@ const AdvocateRegister = () => {
                 </div>
               </div>
 
-              <Button
-                type="submit"
-                className="w-full bg-gradient-to-r from-amber-700 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-white py-6 text-lg font-medium tracking-wide shadow-lg"
-                disabled={loading}
-                data-testid="register-submit-btn"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Registering...
-                  </>
-                ) : (
-                  'Complete Registration'
-                )}
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-amber-700 to-amber-900 hover:from-amber-800 hover:to-amber-950 text-white py-6 text-lg font-semibold tracking-wide shadow-lg"
+                  disabled={loading}
+                  data-testid="register-submit-btn"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Registering...
+                    </>
+                  ) : (
+                    'Complete Registration'
+                  )}
+                </Button>
+                {/* Court Hammer Icon */}
+                <div className={`text-5xl ${hammerAnimate ? 'hammer-animate' : ''}`}>
+                  ⚖️
+                </div>
+              </div>
             </form>
           </CardContent>
+          </div>
         </Card>
 
         <div className="mt-6 text-center">
