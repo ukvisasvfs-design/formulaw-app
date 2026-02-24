@@ -689,7 +689,7 @@ async def rate_call(data: CallRating, current_user: dict = Depends(get_current_u
     # Update advocate average rating
     advocate_calls = await db.calls.find(
         {"advocate_id": call["advocate_id"], "rating": {"$ne": None}},
-        {"_id": 0}
+        {"_id": 0, "rating": 1}
     ).to_list(1000)
     
     total_rating = sum([c.get("rating", 0) for c in advocate_calls]) + data.rating
@@ -907,7 +907,7 @@ async def get_advocate_dashboard(current_user: dict = Depends(get_current_user))
     # Get total earnings
     calls = await db.calls.find(
         {"advocate_id": current_user["id"], "status": "completed"},
-        {"_id": 0}
+        {"_id": 0, "total_cost": 1}
     ).to_list(1000)
     
     total_earnings = sum([c.get("total_cost", 0) for c in calls])
@@ -1112,7 +1112,7 @@ async def get_admin_analytics(current_user: dict = Depends(get_current_user)):
     total_calls = await db.calls.count_documents({})
     
     # Calculate total revenue
-    calls = await db.calls.find({"status": "completed"}, {"_id": 0}).to_list(10000)
+    calls = await db.calls.find({"status": "completed"}, {"_id": 0, "total_cost": 1}).to_list(10000)
     total_revenue = sum([c.get("total_cost", 0) for c in calls])
     
     return AdminStats(
