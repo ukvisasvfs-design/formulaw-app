@@ -212,24 +212,82 @@ def generate_token():
     return secrets.token_urlsafe(32)
 
 async def send_otp_email(email: str, otp_code: str):
-    """Send OTP via email using Resend (placeholder)"""
-    # TODO: Integrate with Resend API
-    logger.info(f"[PLACEHOLDER] Sending OTP {otp_code} to {email}")
-    # In production, use Resend API:
-    # import resend
-    # resend.api_key = os.environ.get('RESEND_API_KEY')
-    # resend.Emails.send({
-    #     "from": "noreply@formulaw.com",
-    #     "to": email,
-    #     "subject": "Your FormuLAW OTP",
-    #     "html": f"<p>Your OTP is: <strong>{otp_code}</strong></p>"
-    # })
-    return True
+    """Send OTP via email using Resend"""
+    try:
+        params = {
+            "from": SENDER_EMAIL,
+            "to": [email],
+            "subject": "Your FormuLAW Verification Code",
+            "html": f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #92400e; margin: 0;">FormuLAW</h1>
+                    <p style="color: #a78bfa; font-size: 14px;">Say it • Seek it • Sorted</p>
+                </div>
+                <div style="background: #fef3c7; border-radius: 10px; padding: 30px; text-align: center;">
+                    <h2 style="color: #78350f; margin-bottom: 20px;">Your Verification Code</h2>
+                    <div style="background: #ffffff; border-radius: 8px; padding: 20px; display: inline-block;">
+                        <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #92400e;">{otp_code}</span>
+                    </div>
+                    <p style="color: #78350f; margin-top: 20px; font-size: 14px;">
+                        This code expires in <strong>60 seconds</strong>
+                    </p>
+                </div>
+                <p style="color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px;">
+                    If you didn't request this code, please ignore this email.<br>
+                    © 2026 FormuLAW - Legal Consultation Platform
+                </p>
+            </div>
+            """
+        }
+        # Run sync SDK in thread to keep FastAPI non-blocking
+        email_response = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"OTP email sent to {email}, ID: {email_response.get('id')}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send OTP email to {email}: {str(e)}")
+        # Return True anyway so flow continues - user can request resend
+        return True
 
 async def send_approval_email(email: str, advocate_name: str):
-    """Send advocate approval email (placeholder)"""
-    logger.info(f"[PLACEHOLDER] Sending approval email to {email}")
-    return True
+    """Send advocate approval email using Resend"""
+    try:
+        params = {
+            "from": SENDER_EMAIL,
+            "to": [email],
+            "subject": "Your FormuLAW Advocate Account is Approved!",
+            "html": f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #92400e; margin: 0;">FormuLAW</h1>
+                    <p style="color: #a78bfa; font-size: 14px;">Say it • Seek it • Sorted</p>
+                </div>
+                <div style="background: #d1fae5; border-radius: 10px; padding: 30px;">
+                    <h2 style="color: #065f46; margin-bottom: 20px;">Congratulations, {advocate_name}!</h2>
+                    <p style="color: #047857; font-size: 16px;">
+                        Your Bar Council ID has been verified and your advocate account is now <strong>APPROVED</strong>.
+                    </p>
+                    <p style="color: #047857; font-size: 14px; margin-top: 20px;">
+                        You can now:
+                    </p>
+                    <ul style="color: #047857; font-size: 14px;">
+                        <li>Toggle your duty status to go online</li>
+                        <li>Receive consultation calls from clients</li>
+                        <li>Earn money for your legal expertise</li>
+                    </ul>
+                </div>
+                <p style="color: #6b7280; font-size: 12px; text-align: center; margin-top: 30px;">
+                    © 2026 FormuLAW - Legal Consultation Platform
+                </p>
+            </div>
+            """
+        }
+        email_response = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Approval email sent to {email}, ID: {email_response.get('id')}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send approval email to {email}: {str(e)}")
+        return True
 
 async def get_current_user(authorization: Optional[str] = Header(None)):
     """Get current authenticated user from token"""
