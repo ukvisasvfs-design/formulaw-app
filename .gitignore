@@ -80,3 +80,7 @@ agenthub/agents/youtube/db
 android-sdk/ frontend/node_modules/.cache/default-development/0.pack
 frontend/node_modules/.cache/default-development/0.pack
 # Note: .env files are tracked for Emergent deployment
+-e 
+# Environment files
+*.env
+*.env.*
