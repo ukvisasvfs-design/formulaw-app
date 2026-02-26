@@ -200,6 +200,31 @@ class AuthResponse(BaseModel):
     token: str
     message: str
 
+# MSG91 OTP Models
+class MSG91SendOTP(BaseModel):
+    identifier: str  # Phone number (91XXXXXXXXXX) or email
+    channel: Optional[str] = None  # sms, email, whatsapp, voice
+
+class MSG91VerifyOTP(BaseModel):
+    req_id: str
+    otp: str
+
+class MSG91Response(BaseModel):
+    success: bool
+    req_id: Optional[str] = None
+    message: str
+
+# Exotel Call Models
+class ExotelCallInitiate(BaseModel):
+    advocate_id: str
+    client_phone: str
+
+class ExotelCallStatus(BaseModel):
+    call_sid: str
+    status: str
+    duration: Optional[int] = None
+    cost: Optional[float] = None
+
 # ========== HELPER FUNCTIONS ==========
 
 async def generate_fid():
