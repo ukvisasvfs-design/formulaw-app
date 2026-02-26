@@ -1378,18 +1378,19 @@ async def razorpay_webhook(request: dict):
 @api_router.post("/msg91/send-otp")
 async def msg91_send_otp_endpoint(data: MSG91SendOTP):
     """
-    Send OTP via MSG91
+    Send OTP via MSG91 (SMS)
     
-    identifier: Phone (91XXXXXXXXXX) or email address
-    channel: sms, email, whatsapp, voice (optional)
+    mobile: Phone number (91XXXXXXXXXX or XXXXXXXXXX)
+    email: Optional email for email OTP
     """
-    result = await msg91_send_otp(data.identifier, data.channel)
+    result = await msg91_send_otp(data.mobile, data.email)
     
     if result["success"]:
-        # Store the req_id in database for verification
+        # Store in database for tracking
         await db.msg91_otps.insert_one({
-            "req_id": result["req_id"],
-            "identifier": data.identifier,
+            "request_id": result.get("request_id"),
+            "mobile": result.get("mobile"),
+            "email": data.email,
             "created_at": datetime.now(timezone.utc),
             "verified": False
         })
@@ -1402,15 +1403,19 @@ async def msg91_verify_otp_endpoint(data: MSG91VerifyOTP):
     """
     Verify OTP via MSG91
     
-    req_id: Request ID from send-otp response
+    mobile: Phone number
     otp: OTP entered by user
     """
-    result = await msg91_verify_otp(data.req_id, data.otp)
+    result = await msg91_verify_otp(data.mobile, data.otp)
     
     if result["success"]:
-        # Mark as verified
+        # Mark as verified in database
+        mobile_clean = data.mobile.replace("+", "").replace(" ", "")
+        if not mobile_clean.startswith("91"):
+            mobile_clean = "91" + mobile_clean.lstrip("0")
+            
         await db.msg91_otps.update_one(
-            {"req_id": data.req_id},
+            {"mobile": mobile_clean, "verified": False},
             {"$set": {"verified": True, "verified_at": datetime.now(timezone.utc)}}
         )
         return result
@@ -1418,14 +1423,14 @@ async def msg91_verify_otp_endpoint(data: MSG91VerifyOTP):
         raise HTTPException(status_code=400, detail=result["message"])
 
 @api_router.post("/msg91/retry-otp")
-async def msg91_retry_otp_endpoint(req_id: str, channel: Optional[str] = None):
+async def msg91_retry_otp_endpoint(data: MSG91RetryOTP):
     """
     Retry OTP on different channel
     
-    req_id: Request ID from send-otp response
-    channel: sms, email, whatsapp, voice
+    mobile: Phone number
+    retry_type: text (SMS) or voice
     """
-    result = await msg91_retry_otp(req_id, channel)
+    result = await msg91_retry_otp(data.mobile, data.retry_type)
     return result
 
 @api_router.post("/webhooks/msg91/otp-verified")
