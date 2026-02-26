@@ -1,124 +1,180 @@
 # FormuLAW - Legal Consultation Platform
+## Product Requirements Document
 
-## Product Overview
-FormuLAW is a Practo-like legal consultation platform with three separate frontend portals (Client, Advocate, Admin) powered by a single FastAPI backend with MongoDB.
+### Overview
+FormuLAW is India's premier legal consultation platform connecting clients with verified advocates for instant legal help. The platform consists of three portals powered by a single backend.
+
+---
 
 ## Tech Stack
-- **Backend**: FastAPI (Python) with Motor (async MongoDB driver)
-- **Frontend**: React with Tailwind CSS and Shadcn/UI components
-- **Database**: MongoDB
-- **Authentication**: Email OTP based login
 
-## Core Features
+### Frontend
+- **Framework**: React 18 with Create React App + CRACO
+- **Styling**: Tailwind CSS + Shadcn/UI Components
+- **Routing**: React Router DOM v6
+- **State**: React Context API
+- **HTTP**: Axios
 
-### Client Portal (`/client`)
-- ✅ Email OTP login
-- ✅ Premium dashboard with law library background
-- ✅ Search advocates with filters (Law Type, City, Language, Sort)
-- ✅ View advocate profiles
-- ✅ Wallet system (balance display, topup - mocked)
-- ✅ Call history
-- ✅ Profile dropdown with logout
+### Backend
+- **Framework**: FastAPI (Python 3.9+)
+- **Database**: MongoDB with Motor (async driver)
+- **Email**: Resend API ✅ Connected
+- **Auth**: JWT + Email OTP
 
-### Advocate Portal (`/advocate`)
-- ✅ Email OTP login
-- ✅ Professional registration form (personal details, Bar Council ID, specializations, pricing)
-- ✅ Auto-generated FormuLAW ID (FID-IND-XXXXXX)
-- ✅ Premium dashboard with verification status
-- ✅ Duty ON/OFF toggle (only for approved advocates)
-- ✅ Stats (Earnings, Wallet, Cases, Rating)
-- ✅ Profile management
-- ✅ Call history
-- ✅ Earnings reports
+---
 
-### Admin Portal (`/admin`)
-- ✅ Secure OTP login (red color scheme)
-- ✅ Pending advocate verifications
-- ✅ Approve/Reject advocates
-- ✅ View all users
-- ✅ View all advocates
-- ✅ Call logs
-- ✅ Platform analytics
+## Portals & Features
 
-## UI/UX Design
-- **Premium Theme**: Law library wallpaper background
-- **Tagline**: "Say it • Seek it • Sorted" (purple, animated pulse)
-- **Logo**: FormuLAW branding at 80% size
-- **Color Scheme**: Amber/gold for client & advocate, Red for admin
-- **Consistent Footer**: About Us, Contact Us, Copyright
+### 1. Client Portal (`/client/*`)
+| Route | Page | Status |
+|-------|------|--------|
+| `/client` | Login | ✅ |
+| `/client/home` | Dashboard - Search Advocates | ✅ |
+| `/client/advocate/:id` | Advocate Profile | ✅ |
+| `/client/wallet` | Wallet & Transactions | ✅ |
+| `/client/call-history` | Call History | ✅ |
+| `/client/profile` | User Profile | ✅ |
 
-## API Endpoints
+### 2. Advocate Portal (`/advocate/*`)
+| Route | Page | Status |
+|-------|------|--------|
+| `/advocate` | Login | ✅ |
+| `/advocate/register` | Registration Form | ✅ |
+| `/advocate/dashboard` | Dashboard | ✅ |
+| `/advocate/profile` | Profile Management | ✅ |
+| `/advocate/call-history` | Call History | ✅ |
+| `/advocate/earnings` | Earnings Report | ✅ |
 
-### Authentication
-- `POST /api/auth/send-otp` - Send OTP to email
-- `POST /api/auth/verify-otp` - Verify OTP and login
-- `GET /api/auth/me` - Get current user
+### 3. Admin Portal (`/admin/*`)
+| Route | Page | Status |
+|-------|------|--------|
+| `/admin` | Login | ✅ |
+| `/admin/dashboard` | Analytics Dashboard | ✅ |
+| `/admin/advocates` | Advocate Management | ✅ |
+| `/admin/users` | User Management | ✅ |
+| `/admin/calls` | Call Logs | ✅ |
 
-### Client APIs
-- `GET /api/client/advocates` - Search advocates with filters
-- `GET /api/client/advocate/{id}` - Get advocate details
-- `POST /api/client/initiate-call` - Start call (mocked Twilio)
-- `GET /api/client/call-history` - View call history
-- `POST /api/client/rate-call` - Rate completed call
-- `GET /api/client/wallet` - Get wallet balance
-- `POST /api/client/wallet/topup` - Add money (mocked Razorpay)
-- `GET /api/client/wallet/transactions` - Transaction history
+---
 
-### Advocate APIs
-- `POST /api/advocate/register` - Register new advocate
-- `GET /api/advocate/profile` - Get profile
-- `PUT /api/advocate/profile` - Update profile
-- `PATCH /api/advocate/duty-status` - Toggle online/offline
-- `GET /api/advocate/dashboard` - Dashboard stats
-- `GET /api/advocate/call-history` - Call history
+## Integrations
 
-### Admin APIs
-- `GET /api/admin/advocates/pending` - Pending verifications
-- `PUT /api/admin/advocates/{id}/verify` - Approve/Reject
-- `GET /api/admin/advocates` - All advocates
-- `GET /api/admin/users` - All users
-- `GET /api/admin/calls` - All calls
-- `GET /api/admin/analytics` - Platform stats
+| Service | Purpose | Status |
+|---------|---------|--------|
+| Resend | Email OTP | ✅ Connected |
+| Razorpay | Payments | ⏳ Mock (needs key) |
+| Twilio | Masked Calls | ⏳ Mock (needs key) |
 
-### Utility APIs
-- `GET /api/utils/cities` - Indian cities list
-- `GET /api/utils/law-types` - Law specializations
-- `GET /api/utils/languages` - Indian languages
+---
 
-## MOCKED Integrations (Placeholder)
-- **Twilio**: Masked GSM calls - currently logs to console
-- **Resend**: Email OTP - OTPs stored in DB, not actually sent
-- **Razorpay**: Payments - topup always succeeds
+## Deployment
 
-## Test Credentials
-- **Client**: Any email (auto-creates user)
-- **Advocate**: Must register first at /advocate/register
-- **Admin**: admin@formulaw.com (auto-created on startup)
+### Frontend (Vercel/Netlify)
+```bash
+cd frontend
+npm install
+npm run build
+# Output: /build folder
+```
 
-## Database Collections
+**Vercel Settings:**
+- Framework: Create React App
+- Build Command: `npm run build`
+- Output Directory: `build`
+- Root Directory: `frontend`
+
+**Environment Variables:**
+```
+REACT_APP_BACKEND_URL=https://your-backend-url.com
+```
+
+### Backend (Railway/Render)
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn server:app --host 0.0.0.0 --port 8001
+```
+
+**Environment Variables:**
+```
+MONGO_URL=mongodb+srv://...
+DB_NAME=formulaw
+RESEND_API_KEY=re_xxxxx
+SENDER_EMAIL=noreply@formulaw.in
+```
+
+---
+
+## Database Schema
+
+### Collections
 - `users` - Client accounts
-- `advocates` - Advocate profiles
+- `advocates` - Advocate profiles with verification status
 - `admins` - Admin accounts
 - `otps` - OTP storage (auto-expires)
 - `calls` - Call records
-- `wallets` - Wallet data with transactions
+- `wallets` - Wallet balances and transactions
 
-## What's Been Implemented (Feb 22, 2026)
-1. ✅ Full project scaffolding (FastAPI + React)
-2. ✅ All backend APIs for auth, advocates, clients, admin, wallet
-3. ✅ Premium UI for all auth pages (login, register)
-4. ✅ Premium UI for dashboards (Client Home, Advocate Dashboard)
-5. ✅ Profile dropdowns with logout
-6. ✅ Logo reduced to 80%
-7. ✅ Purple animated tagline across all pages
-8. ✅ Verification status handling for advocates
-9. ✅ Testing completed - 100% backend, 100% frontend
+---
 
-## Upcoming/Future Tasks
-- [ ] Integrate real Twilio for masked calls
-- [ ] Integrate Resend for actual email OTPs
-- [ ] Integrate Razorpay for real payments
-- [ ] Advocate rating & review system
-- [ ] Consultation history with recordings
-- [ ] Email/SMS booking confirmations
-- [ ] Referral program
+## What's Complete (Feb 26, 2026)
+
+1. ✅ Full project structure with professional comments
+2. ✅ Three working portals (Client, Advocate, Admin)
+3. ✅ Premium UI with law library theme
+4. ✅ Email OTP authentication (Resend)
+5. ✅ Advocate registration with Bar Council verification
+6. ✅ Wallet system with transaction history
+7. ✅ Search advocates with filters
+8. ✅ Admin verification workflow
+9. ✅ Vercel/Netlify deployment configs
+10. ✅ Professional README
+
+---
+
+## Pending (Needs API Keys)
+
+1. ⏳ Razorpay - Real payment processing
+2. ⏳ Twilio - Masked GSM calls
+3. ⏳ Custom domain (formulaw.in) - Ready to connect
+
+---
+
+## File Structure
+
+```
+/app
+├── frontend/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/ui/     # Shadcn components
+│   │   ├── context/           # AuthContext
+│   │   ├── hooks/             # Custom hooks
+│   │   ├── lib/               # Utilities
+│   │   └── pages/
+│   │       ├── admin/         # Admin pages
+│   │       ├── advocate/      # Advocate pages
+│   │       └── client/        # Client pages
+│   ├── App.js                 # Main router
+│   ├── craco.config.js        # Build config
+│   ├── package.json
+│   ├── vercel.json            # Vercel config
+│   └── netlify.toml           # Netlify config
+│
+└── backend/
+    ├── server.py              # FastAPI server
+    ├── requirements.txt
+    └── .env
+```
+
+---
+
+## Test Credentials
+
+- **Client**: Any email (auto-creates)
+- **Advocate**: Register at /advocate/register
+- **Admin**: admin@formulaw.com (auto-created)
+
+---
+
+© 2026 FormuLAW. All rights reserved.
