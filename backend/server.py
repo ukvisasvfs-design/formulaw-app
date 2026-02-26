@@ -328,6 +328,181 @@ async def send_approval_email(email: str, advocate_name: str):
         logger.error(f"Failed to send approval email to {email}: {str(e)}")
         return True
 
+# ========== MSG91 HELPER FUNCTIONS ==========
+
+async def msg91_send_otp(identifier: str, channel: Optional[str] = None):
+    """Send OTP via MSG91 Widget API"""
+    try:
+        async with httpx.AsyncClient() as client:
+            payload = {
+                "widgetId": MSG91_WIDGET_ID,
+                "identifier": identifier
+            }
+            if channel:
+                payload["channel"] = channel
+            
+            headers = {
+                "authkey": MSG91_AUTH_KEY,
+                "Content-Type": "application/json"
+            }
+            
+            response = await client.post(
+                f"{MSG91_BASE_URL}/sendOtp",
+                json=payload,
+                headers=headers,
+                timeout=30.0
+            )
+            
+            logger.info(f"MSG91 sendOtp response: {response.status_code} - {response.text}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                return {
+                    "success": True,
+                    "req_id": data.get("reqId"),
+                    "message": "OTP sent successfully"
+                }
+            else:
+                return {
+                    "success": False,
+                    "req_id": None,
+                    "message": response.json().get("message", "Failed to send OTP")
+                }
+    except Exception as e:
+        logger.error(f"MSG91 sendOtp error: {str(e)}")
+        return {"success": False, "req_id": None, "message": str(e)}
+
+async def msg91_verify_otp(req_id: str, otp: str):
+    """Verify OTP via MSG91 Widget API"""
+    try:
+        async with httpx.AsyncClient() as client:
+            payload = {
+                "widgetId": MSG91_WIDGET_ID,
+                "reqId": req_id,
+                "otp": otp
+            }
+            
+            headers = {
+                "authkey": MSG91_AUTH_KEY,
+                "Content-Type": "application/json"
+            }
+            
+            response = await client.post(
+                f"{MSG91_BASE_URL}/verifyOtp",
+                json=payload,
+                headers=headers,
+                timeout=30.0
+            )
+            
+            logger.info(f"MSG91 verifyOtp response: {response.status_code} - {response.text}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                return {
+                    "success": True,
+                    "access_token": data.get("accessToken"),
+                    "message": "OTP verified successfully"
+                }
+            else:
+                return {
+                    "success": False,
+                    "access_token": None,
+                    "message": "Invalid OTP"
+                }
+    except Exception as e:
+        logger.error(f"MSG91 verifyOtp error: {str(e)}")
+        return {"success": False, "access_token": None, "message": str(e)}
+
+async def msg91_retry_otp(req_id: str, channel: Optional[str] = None):
+    """Retry OTP on different channel"""
+    try:
+        async with httpx.AsyncClient() as client:
+            payload = {
+                "widgetId": MSG91_WIDGET_ID,
+                "reqId": req_id
+            }
+            if channel:
+                payload["retryChannel"] = channel
+            
+            headers = {
+                "authkey": MSG91_AUTH_KEY,
+                "Content-Type": "application/json"
+            }
+            
+            response = await client.post(
+                f"{MSG91_BASE_URL}/retryOtp",
+                json=payload,
+                headers=headers,
+                timeout=30.0
+            )
+            
+            return response.json()
+    except Exception as e:
+        logger.error(f"MSG91 retryOtp error: {str(e)}")
+        return {"success": False, "message": str(e)}
+
+# ========== EXOTEL HELPER FUNCTIONS ==========
+
+def get_exotel_auth():
+    """Get Exotel Basic Auth header"""
+    credentials = f"{EXOTEL_API_KEY}:{EXOTEL_API_TOKEN}"
+    encoded = base64.b64encode(credentials.encode()).decode()
+    return f"Basic {encoded}"
+
+async def exotel_initiate_call(from_number: str, to_number: str, call_id: str):
+    """
+    Initiate a masked call via Exotel
+    from_number: Client's phone (caller)
+    to_number: Advocate's phone (callee)
+    """
+    try:
+        # Clean phone numbers (remove +91 or 0 prefix)
+        from_clean = from_number.replace("+91", "").replace(" ", "").lstrip("0")
+        to_clean = to_number.replace("+91", "").replace(" ", "").lstrip("0")
+        
+        async with httpx.AsyncClient() as client:
+            # Exotel Connect API URL
+            url = f"https://api.exotel.com/v1/Accounts/{EXOTEL_ACCOUNT_SID}/Calls/connect.json"
+            
+            payload = {
+                "From": from_clean,
+                "To": to_clean,
+                "CallerId": EXOTEL_EXOPHONE,
+                "CallType": "trans",
+                "StatusCallback": f"{os.environ.get('REACT_APP_BACKEND_URL', '')}/api/webhooks/exotel/status",
+                "StatusCallbackEvents[]": ["terminal"],
+                "CustomField": call_id  # Store our call ID for reference
+            }
+            
+            headers = {
+                "Authorization": get_exotel_auth(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+            
+            response = await client.post(url, data=payload, headers=headers, timeout=30.0)
+            
+            logger.info(f"Exotel call initiate response: {response.status_code} - {response.text}")
+            
+            if response.status_code in [200, 201]:
+                data = response.json()
+                call_data = data.get("Call", {})
+                return {
+                    "success": True,
+                    "exotel_call_sid": call_data.get("Sid"),
+                    "status": call_data.get("Status"),
+                    "message": "Call initiated successfully"
+                }
+            else:
+                return {
+                    "success": False,
+                    "exotel_call_sid": None,
+                    "status": "failed",
+                    "message": f"Failed to initiate call: {response.text}"
+                }
+    except Exception as e:
+        logger.error(f"Exotel call error: {str(e)}")
+        return {"success": False, "exotel_call_sid": None, "status": "error", "message": str(e)}
+
 async def get_current_user(authorization: Optional[str] = Header(None)):
     """Get current authenticated user from token"""
     if not authorization or not authorization.startswith("Bearer "):
