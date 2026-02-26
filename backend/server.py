@@ -1353,6 +1353,334 @@ async def razorpay_webhook(request: dict):
     logger.info(f"[PLACEHOLDER] Razorpay webhook received: {request}")
     return {"message": "Webhook received"}
 
+# ========== MSG91 OTP ENDPOINTS ==========
+
+@api_router.post("/msg91/send-otp")
+async def msg91_send_otp_endpoint(data: MSG91SendOTP):
+    """
+    Send OTP via MSG91
+    
+    identifier: Phone (91XXXXXXXXXX) or email address
+    channel: sms, email, whatsapp, voice (optional)
+    """
+    result = await msg91_send_otp(data.identifier, data.channel)
+    
+    if result["success"]:
+        # Store the req_id in database for verification
+        await db.msg91_otps.insert_one({
+            "req_id": result["req_id"],
+            "identifier": data.identifier,
+            "created_at": datetime.now(timezone.utc),
+            "verified": False
+        })
+        return result
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
+
+@api_router.post("/msg91/verify-otp")
+async def msg91_verify_otp_endpoint(data: MSG91VerifyOTP):
+    """
+    Verify OTP via MSG91
+    
+    req_id: Request ID from send-otp response
+    otp: OTP entered by user
+    """
+    result = await msg91_verify_otp(data.req_id, data.otp)
+    
+    if result["success"]:
+        # Mark as verified
+        await db.msg91_otps.update_one(
+            {"req_id": data.req_id},
+            {"$set": {"verified": True, "verified_at": datetime.now(timezone.utc)}}
+        )
+        return result
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
+
+@api_router.post("/msg91/retry-otp")
+async def msg91_retry_otp_endpoint(req_id: str, channel: Optional[str] = None):
+    """
+    Retry OTP on different channel
+    
+    req_id: Request ID from send-otp response
+    channel: sms, email, whatsapp, voice
+    """
+    result = await msg91_retry_otp(req_id, channel)
+    return result
+
+@api_router.post("/webhooks/msg91/otp-verified")
+async def msg91_otp_webhook(request: Request):
+    """
+    MSG91 OTP Verification Webhook
+    
+    Configure this URL in MSG91 dashboard:
+    {BACKEND_URL}/api/webhooks/msg91/otp-verified
+    """
+    try:
+        data = await request.json()
+        logger.info(f"MSG91 OTP webhook received: {data}")
+        
+        req_id = data.get("reqId")
+        status = data.get("status")
+        identifier = data.get("identifier")
+        
+        if status == "verified":
+            # Update in database
+            await db.msg91_otps.update_one(
+                {"req_id": req_id},
+                {"$set": {"verified": True, "verified_at": datetime.now(timezone.utc)}}
+            )
+        
+        return {"message": "Webhook processed"}
+    except Exception as e:
+        logger.error(f"MSG91 webhook error: {str(e)}")
+        return {"message": "Error processing webhook"}
+
+# ========== EXOTEL CALL ENDPOINTS ==========
+
+@api_router.post("/exotel/initiate-call")
+async def exotel_initiate_call_endpoint(
+    data: ExotelCallInitiate,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Initiate masked call via Exotel
+    
+    - Client calls Exophone
+    - Backend identifies advocate
+    - Call forwarded to advocate with Exophone as Caller ID
+    - Real-time wallet deduction based on call duration
+    """
+    await require_role(current_user, ["client"])
+    
+    # Get advocate details
+    advocate = await db.advocates.find_one(
+        {"id": data.advocate_id},
+        {"_id": 0}
+    )
+    
+    if not advocate:
+        raise HTTPException(status_code=404, detail="Advocate not found")
+    
+    if advocate.get("verification_status") != "approved":
+        raise HTTPException(status_code=400, detail="Advocate not verified")
+    
+    if not advocate.get("duty_status"):
+        raise HTTPException(status_code=400, detail="Advocate is offline")
+    
+    # Check client wallet balance
+    wallet = await db.wallets.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    min_balance = advocate.get("per_minute_charge", PER_MINUTE_RATE) * 5  # Min 5 minutes
+    
+    if not wallet or wallet.get("balance", 0) < min_balance:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Insufficient wallet balance. Minimum ₹{min_balance} required for call"
+        )
+    
+    # Create call record
+    call_id = str(uuid.uuid4())
+    call_record = {
+        "id": call_id,
+        "client_id": current_user["id"],
+        "client_phone": data.client_phone,
+        "advocate_id": data.advocate_id,
+        "advocate_phone": advocate.get("phone_number"),
+        "cost_per_minute": advocate.get("per_minute_charge", PER_MINUTE_RATE),
+        "status": "initiating",
+        "created_at": datetime.now(timezone.utc)
+    }
+    
+    await db.calls.insert_one(call_record)
+    
+    # Initiate call via Exotel
+    result = await exotel_initiate_call(
+        from_number=data.client_phone,
+        to_number=advocate.get("phone_number"),
+        call_id=call_id
+    )
+    
+    if result["success"]:
+        # Update call record with Exotel SID
+        await db.calls.update_one(
+            {"id": call_id},
+            {"$set": {
+                "exotel_call_sid": result["exotel_call_sid"],
+                "status": "ringing"
+            }}
+        )
+        
+        return {
+            "success": True,
+            "call_id": call_id,
+            "exotel_call_sid": result["exotel_call_sid"],
+            "message": "Call initiated. Connecting..."
+        }
+    else:
+        # Update call record as failed
+        await db.calls.update_one(
+            {"id": call_id},
+            {"$set": {"status": "failed", "error": result["message"]}}
+        )
+        raise HTTPException(status_code=500, detail=result["message"])
+
+@api_router.post("/webhooks/exotel/status")
+async def exotel_status_webhook(request: Request):
+    """
+    Exotel Call Status Webhook
+    
+    Configure this URL in Exotel dashboard as StatusCallback:
+    {BACKEND_URL}/api/webhooks/exotel/status
+    
+    Handles call completion and wallet deduction
+    """
+    try:
+        # Parse form data from Exotel
+        form_data = await request.form()
+        data = dict(form_data)
+        
+        logger.info(f"Exotel status webhook received: {data}")
+        
+        call_sid = data.get("CallSid")
+        status = data.get("Status")
+        duration = data.get("RecordingDuration") or data.get("Duration") or data.get("ConversationDuration")
+        custom_field = data.get("CustomField")  # Our call_id
+        
+        if not custom_field:
+            # Try to find call by exotel_call_sid
+            call = await db.calls.find_one({"exotel_call_sid": call_sid}, {"_id": 0})
+            if call:
+                custom_field = call.get("id")
+        
+        if custom_field:
+            call = await db.calls.find_one({"id": custom_field}, {"_id": 0})
+            
+            if call and status in ["completed", "busy", "no-answer", "failed", "canceled"]:
+                duration_seconds = int(duration or 0)
+                duration_minutes = duration_seconds / 60 if duration_seconds > 0 else 0
+                
+                # Round up to next minute for billing
+                billed_minutes = -(-duration_seconds // 60) if duration_seconds > 0 else 0
+                
+                total_cost = billed_minutes * call.get("cost_per_minute", PER_MINUTE_RATE)
+                
+                # Update call record
+                await db.calls.update_one(
+                    {"id": custom_field},
+                    {"$set": {
+                        "status": "completed" if status == "completed" else status,
+                        "end_time": datetime.now(timezone.utc),
+                        "duration_seconds": duration_seconds,
+                        "duration_minutes": round(duration_minutes, 2),
+                        "billed_minutes": billed_minutes,
+                        "total_cost": total_cost,
+                        "exotel_status": status
+                    }}
+                )
+                
+                # Deduct from client wallet if call completed
+                if status == "completed" and total_cost > 0:
+                    await db.wallets.update_one(
+                        {"user_id": call["client_id"]},
+                        {
+                            "$inc": {"balance": -total_cost},
+                            "$push": {
+                                "transactions": {
+                                    "type": "call_charge",
+                                    "amount": -total_cost,
+                                    "reference": f"Call {custom_field} - {billed_minutes} mins",
+                                    "timestamp": datetime.now(timezone.utc)
+                                }
+                            }
+                        }
+                    )
+                    
+                    # Add to advocate earnings
+                    advocate_share = total_cost * 0.8  # 80% to advocate
+                    await db.wallets.update_one(
+                        {"user_id": call["advocate_id"]},
+                        {
+                            "$inc": {"balance": advocate_share},
+                            "$push": {
+                                "transactions": {
+                                    "type": "call_earning",
+                                    "amount": advocate_share,
+                                    "reference": f"Call {custom_field} - {billed_minutes} mins",
+                                    "timestamp": datetime.now(timezone.utc)
+                                }
+                            }
+                        },
+                        upsert=True
+                    )
+                    
+                    logger.info(f"Call {custom_field} completed. Duration: {billed_minutes} mins, Cost: ₹{total_cost}")
+        
+        return {"message": "Webhook processed"}
+    except Exception as e:
+        logger.error(f"Exotel webhook error: {str(e)}")
+        return {"message": "Error processing webhook"}
+
+@api_router.get("/webhooks/exotel/passthru")
+async def exotel_passthru_webhook(request: Request):
+    """
+    Exotel Passthru Webhook for Number Masking Flow
+    
+    Configure this URL in Exotel Flow Builder as Passthru applet URL:
+    {BACKEND_URL}/api/webhooks/exotel/passthru
+    
+    Flow:
+    1. Client calls Exophone
+    2. Exotel sends client number to this webhook
+    3. We lookup active call/booking and return advocate's number
+    4. Exotel connects client to advocate
+    """
+    try:
+        # Get query params from Exotel
+        params = dict(request.query_params)
+        logger.info(f"Exotel passthru webhook received: {params}")
+        
+        caller_number = params.get("CallFrom") or params.get("From")
+        exophone = params.get("CallTo") or params.get("To")
+        call_sid = params.get("CallSid")
+        
+        if not caller_number:
+            logger.error("No caller number in passthru request")
+            return PlainTextResponse("", status_code=200)
+        
+        # Clean caller number
+        caller_clean = caller_number.replace("+91", "").replace(" ", "").lstrip("0")
+        
+        # Find pending call for this client
+        pending_call = await db.calls.find_one({
+            "client_phone": {"$regex": caller_clean},
+            "status": {"$in": ["initiating", "pending", "ringing"]}
+        }, {"_id": 0}, sort=[("created_at", -1)])
+        
+        if pending_call:
+            advocate_phone = pending_call.get("advocate_phone", "")
+            # Clean advocate phone for Exotel
+            advocate_clean = advocate_phone.replace("+91", "").replace(" ", "").lstrip("0")
+            
+            # Update call with Exotel SID
+            await db.calls.update_one(
+                {"id": pending_call["id"]},
+                {"$set": {
+                    "exotel_call_sid": call_sid,
+                    "status": "connecting"
+                }}
+            )
+            
+            logger.info(f"Passthru: Routing {caller_clean} to advocate {advocate_clean}")
+            return PlainTextResponse(advocate_clean, status_code=200)
+        else:
+            # No pending call found - could route to IVR or default number
+            logger.warning(f"No pending call found for caller: {caller_clean}")
+            return PlainTextResponse("", status_code=302)  # 302 = alternate path in flow
+            
+    except Exception as e:
+        logger.error(f"Exotel passthru error: {str(e)}")
+        return PlainTextResponse("", status_code=500)
+
 # ========== UTILITY ENDPOINTS ==========
 
 @api_router.get("/utils/cities")
