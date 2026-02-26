@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
+import { useAuth } from '../../context/AuthContext';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Switch } from '../../components/ui/switch';
+import { Badge } from '../../components/ui/badge';
 import { toast } from 'sonner';
 import { LogOut, User, Phone, Wallet, TrendingUp, Star, Briefcase, Clock, ChevronDown, Settings } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency } from '../../lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,

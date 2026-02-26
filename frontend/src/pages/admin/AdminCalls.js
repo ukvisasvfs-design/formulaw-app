@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useAuth } from '../../context/AuthContext';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Badge } from '../../components/ui/badge';
 import { toast } from 'sonner';
 import { ArrowLeft, Phone, Star } from 'lucide-react';
-import { formatCurrency, formatDate, formatDuration } from '@/lib/utils';
+import { formatCurrency, formatDate, formatDuration } from '../../lib/utils';
 
 const AdminCalls = () => {
   const [calls, setCalls] = useState([]);
