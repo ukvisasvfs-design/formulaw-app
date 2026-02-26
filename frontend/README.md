@@ -1,70 +1,152 @@
-# Getting Started with Create React App
+# FormuLAW - Legal Consultation Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <strong>Say it • Seek it • Sorted</strong>
+</p>
 
-## Available Scripts
+India's premier legal consultation platform connecting clients with verified advocates for instant legal help.
 
-In the project directory, you can run:
+## 🚀 Quick Start
 
-### `npm start`
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- MongoDB (for backend)
+- Python 3.9+ (for backend)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Frontend Setup
+```bash
+cd frontend
+npm install
+npm start
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Backend Setup
+```bash
+cd backend
+pip install -r requirements.txt
+python server.py
+```
 
-### `npm test`
+## 📁 Project Structure
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+formulaw/
+├── frontend/                 # React Frontend Application
+│   ├── public/              # Static assets
+│   ├── src/
+│   │   ├── components/      # Reusable UI components (Shadcn/UI)
+│   │   ├── context/         # React Context (Auth)
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── lib/             # Utility functions
+│   │   └── pages/           # Page components
+│   │       ├── admin/       # Admin portal pages
+│   │       ├── advocate/    # Advocate portal pages
+│   │       └── client/      # Client portal pages
+│   ├── package.json
+│   ├── vercel.json          # Vercel deployment config
+│   └── netlify.toml         # Netlify deployment config
+│
+└── backend/                  # FastAPI Backend
+    ├── server.py            # Main API server
+    ├── requirements.txt     # Python dependencies
+    └── .env                 # Environment variables
+```
 
-### `npm run build`
+## 🌐 Three Portals
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. Client Portal (`/client`)
+- Email OTP login
+- Search advocates by location, expertise, language
+- View advocate profiles and ratings
+- Initiate consultations
+- Wallet system for payments
+- Call history
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Advocate Portal (`/advocate`)
+- Professional registration with Bar Council verification
+- Dashboard with earnings and case statistics
+- Duty ON/OFF toggle for availability
+- Call history and client management
+- Profile management
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 3. Admin Portal (`/admin`)
+- Verify/reject advocate registrations
+- View all users and advocates
+- Monitor call logs
+- Platform analytics
 
-### `npm run eject`
+## 🔧 Environment Variables
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Frontend (.env)
+```
+REACT_APP_BACKEND_URL=https://your-backend-url.com
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Backend (.env)
+```
+MONGO_URL=mongodb://localhost:27017
+DB_NAME=formulaw
+RESEND_API_KEY=re_xxxxx
+SENDER_EMAIL=noreply@yourdomain.com
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🚀 Deployment
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Vercel (Frontend)
+1. Push code to GitHub
+2. Import project in Vercel
+3. Set root directory to `frontend`
+4. Add environment variables
+5. Deploy!
 
-## Learn More
+### Netlify (Frontend)
+1. Push code to GitHub
+2. Import project in Netlify
+3. Build settings are in `netlify.toml`
+4. Add environment variables
+5. Deploy!
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Backend (Railway/Render/Heroku)
+1. Create new project
+2. Connect GitHub repository
+3. Set root directory to `backend`
+4. Add environment variables
+5. Deploy!
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📝 API Documentation
 
-### Code Splitting
+Backend API runs on FastAPI with automatic documentation:
+- Swagger UI: `/docs`
+- ReDoc: `/redoc`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🔒 Security Features
+- Email OTP authentication
+- JWT token-based sessions
+- Role-based access control (RBAC)
+- Bar Council ID verification for advocates
 
-### Analyzing the Bundle Size
+## 🛠️ Tech Stack
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Frontend:**
+- React 18
+- Tailwind CSS
+- Shadcn/UI Components
+- React Router DOM
+- Axios
 
-### Making a Progressive Web App
+**Backend:**
+- FastAPI (Python)
+- MongoDB with Motor (async driver)
+- Resend (Email OTP)
+- JWT Authentication
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📄 License
 
-### Advanced Configuration
+© 2026 FormuLAW. All rights reserved.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<p align="center">
+  Made with ❤️ in India
+</p>
