@@ -205,17 +205,16 @@ class AuthResponse(BaseModel):
 
 # MSG91 OTP Models
 class MSG91SendOTP(BaseModel):
-    identifier: str  # Phone number (91XXXXXXXXXX) or email
-    channel: Optional[str] = None  # sms, email, whatsapp, voice
+    mobile: str  # Phone number (91XXXXXXXXXX or XXXXXXXXXX)
+    email: Optional[str] = None  # Optional email for email OTP
 
 class MSG91VerifyOTP(BaseModel):
-    req_id: str
-    otp: str
+    mobile: str  # Phone number
+    otp: str  # OTP entered by user
 
-class MSG91Response(BaseModel):
-    success: bool
-    req_id: Optional[str] = None
-    message: str
+class MSG91RetryOTP(BaseModel):
+    mobile: str
+    retry_type: Optional[str] = "text"  # text or voice
 
 # Exotel Call Models
 class ExotelCallInitiate(BaseModel):
