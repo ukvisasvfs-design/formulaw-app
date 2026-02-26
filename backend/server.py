@@ -1,11 +1,13 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header, BackgroundTasks
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header, BackgroundTasks, Request, Response
+from fastapi.responses import JSONResponse, PlainTextResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import asyncio
+import httpx
+import base64
 from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from typing import List, Optional, Literal
@@ -28,6 +30,18 @@ db = client[os.environ['DB_NAME']]
 # Resend configuration
 resend.api_key = os.environ.get('RESEND_API_KEY')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+
+# MSG91 Configuration
+MSG91_WIDGET_ID = os.environ.get('MSG91_WIDGET_ID')
+MSG91_AUTH_KEY = os.environ.get('MSG91_AUTH_KEY')
+MSG91_BASE_URL = "https://api.msg91.com/api/v5/widget"
+
+# Exotel Configuration
+EXOTEL_API_KEY = os.environ.get('EXOTEL_API_KEY')
+EXOTEL_API_TOKEN = os.environ.get('EXOTEL_API_TOKEN')
+EXOTEL_ACCOUNT_SID = os.environ.get('EXOTEL_ACCOUNT_SID', 'formulaw1')
+EXOTEL_EXOPHONE = os.environ.get('EXOTEL_EXOPHONE', '+914035166598')
+PER_MINUTE_RATE = float(os.environ.get('PER_MINUTE_RATE', 10))
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
