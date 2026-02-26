@@ -40,7 +40,9 @@ MSG91_BASE_URL = "https://api.msg91.com/api/v5/widget"
 EXOTEL_API_KEY = os.environ.get('EXOTEL_API_KEY')
 EXOTEL_API_TOKEN = os.environ.get('EXOTEL_API_TOKEN')
 EXOTEL_ACCOUNT_SID = os.environ.get('EXOTEL_ACCOUNT_SID', 'formulaw1')
-EXOTEL_EXOPHONE = os.environ.get('EXOTEL_EXOPHONE', '+914035166598')
+EXOTEL_SUBDOMAIN = os.environ.get('EXOTEL_SUBDOMAIN', 'api.exotel.com')
+EXOTEL_EXOPHONE = os.environ.get('EXOTEL_EXOPHONE', '04041893878')
+EXOTEL_APP_ID = os.environ.get('EXOTEL_APP_ID', '1191053')
 PER_MINUTE_RATE = float(os.environ.get('PER_MINUTE_RATE', 10))
 
 # Password hashing
