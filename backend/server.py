@@ -463,8 +463,8 @@ async def exotel_initiate_call(from_number: str, to_number: str, call_id: str):
         to_clean = to_number.replace("+91", "").replace(" ", "").lstrip("0")
         
         async with httpx.AsyncClient() as client:
-            # Exotel Connect API URL
-            url = f"https://api.exotel.com/v1/Accounts/{EXOTEL_ACCOUNT_SID}/Calls/connect.json"
+            # Exotel Connect API URL - using configured subdomain (Singapore region)
+            url = f"https://{EXOTEL_SUBDOMAIN}/v1/Accounts/{EXOTEL_ACCOUNT_SID}/Calls/connect.json"
             
             payload = {
                 "From": from_clean,
