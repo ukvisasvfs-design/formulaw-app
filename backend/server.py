@@ -333,113 +333,131 @@ async def send_approval_email(email: str, advocate_name: str):
 
 # ========== MSG91 HELPER FUNCTIONS ==========
 
-async def msg91_send_otp(identifier: str, channel: Optional[str] = None):
-    """Send OTP via MSG91 Widget API"""
+async def msg91_send_otp(mobile: str, email: Optional[str] = None):
+    """
+    Send OTP via MSG91 Direct OTP API (Server-side, no captcha)
+    mobile: Phone number in format 91XXXXXXXXXX
+    email: Optional email address for email OTP
+    """
     try:
         async with httpx.AsyncClient() as client:
-            payload = {
-                "widgetId": MSG91_WIDGET_ID,
-                "identifier": identifier
-            }
-            if channel:
-                payload["channel"] = channel
+            # Clean mobile number - ensure 91 prefix
+            mobile_clean = mobile.replace("+", "").replace(" ", "")
+            if not mobile_clean.startswith("91"):
+                mobile_clean = "91" + mobile_clean.lstrip("0")
             
-            headers = {
+            payload = {
+                "mobile": mobile_clean,
                 "authkey": MSG91_AUTH_KEY,
-                "Content-Type": "application/json"
+                "realTimeResponse": "1"
             }
+            
+            # Add email if provided
+            if email:
+                payload["email"] = email
             
             response = await client.post(
-                f"{MSG91_BASE_URL}/sendOtp",
-                json=payload,
-                headers=headers,
+                f"{MSG91_OTP_URL}",
+                data=payload,
                 timeout=30.0
             )
             
             logger.info(f"MSG91 sendOtp response: {response.status_code} - {response.text}")
             
-            if response.status_code == 200:
-                data = response.json()
+            data = response.json()
+            
+            if data.get("type") == "success" or response.status_code == 200:
                 return {
                     "success": True,
-                    "req_id": data.get("reqId"),
+                    "request_id": data.get("request_id"),
+                    "mobile": mobile_clean,
                     "message": "OTP sent successfully"
                 }
             else:
                 return {
                     "success": False,
-                    "req_id": None,
-                    "message": response.json().get("message", "Failed to send OTP")
+                    "request_id": None,
+                    "message": data.get("message", "Failed to send OTP")
                 }
     except Exception as e:
         logger.error(f"MSG91 sendOtp error: {str(e)}")
-        return {"success": False, "req_id": None, "message": str(e)}
+        return {"success": False, "request_id": None, "message": str(e)}
 
-async def msg91_verify_otp(req_id: str, otp: str):
-    """Verify OTP via MSG91 Widget API"""
+async def msg91_verify_otp(mobile: str, otp: str):
+    """
+    Verify OTP via MSG91 Direct OTP API
+    mobile: Phone number in format 91XXXXXXXXXX
+    otp: OTP entered by user
+    """
     try:
         async with httpx.AsyncClient() as client:
-            payload = {
-                "widgetId": MSG91_WIDGET_ID,
-                "reqId": req_id,
-                "otp": otp
+            # Clean mobile number
+            mobile_clean = mobile.replace("+", "").replace(" ", "")
+            if not mobile_clean.startswith("91"):
+                mobile_clean = "91" + mobile_clean.lstrip("0")
+            
+            params = {
+                "mobile": mobile_clean,
+                "otp": otp,
+                "authkey": MSG91_AUTH_KEY
             }
             
-            headers = {
-                "authkey": MSG91_AUTH_KEY,
-                "Content-Type": "application/json"
-            }
-            
-            response = await client.post(
-                f"{MSG91_BASE_URL}/verifyOtp",
-                json=payload,
-                headers=headers,
+            response = await client.get(
+                f"{MSG91_OTP_URL}/verify",
+                params=params,
                 timeout=30.0
             )
             
             logger.info(f"MSG91 verifyOtp response: {response.status_code} - {response.text}")
             
-            if response.status_code == 200:
-                data = response.json()
+            data = response.json()
+            
+            if data.get("type") == "success" or data.get("message") == "OTP verified success":
                 return {
                     "success": True,
-                    "access_token": data.get("accessToken"),
                     "message": "OTP verified successfully"
                 }
             else:
                 return {
                     "success": False,
-                    "access_token": None,
-                    "message": "Invalid OTP"
+                    "message": data.get("message", "Invalid OTP")
                 }
     except Exception as e:
         logger.error(f"MSG91 verifyOtp error: {str(e)}")
-        return {"success": False, "access_token": None, "message": str(e)}
+        return {"success": False, "message": str(e)}
 
-async def msg91_retry_otp(req_id: str, channel: Optional[str] = None):
-    """Retry OTP on different channel"""
+async def msg91_retry_otp(mobile: str, retry_type: str = "text"):
+    """
+    Retry OTP on different channel
+    mobile: Phone number
+    retry_type: text (SMS) or voice
+    """
     try:
         async with httpx.AsyncClient() as client:
-            payload = {
-                "widgetId": MSG91_WIDGET_ID,
-                "reqId": req_id
-            }
-            if channel:
-                payload["retryChannel"] = channel
+            # Clean mobile number
+            mobile_clean = mobile.replace("+", "").replace(" ", "")
+            if not mobile_clean.startswith("91"):
+                mobile_clean = "91" + mobile_clean.lstrip("0")
             
-            headers = {
+            params = {
+                "mobile": mobile_clean,
                 "authkey": MSG91_AUTH_KEY,
-                "Content-Type": "application/json"
+                "retrytype": retry_type
             }
             
-            response = await client.post(
-                f"{MSG91_BASE_URL}/retryOtp",
-                json=payload,
-                headers=headers,
+            response = await client.get(
+                f"{MSG91_OTP_URL}/retry",
+                params=params,
                 timeout=30.0
             )
             
-            return response.json()
+            logger.info(f"MSG91 retryOtp response: {response.status_code} - {response.text}")
+            
+            data = response.json()
+            return {
+                "success": data.get("type") == "success",
+                "message": data.get("message", "")
+            }
     except Exception as e:
         logger.error(f"MSG91 retryOtp error: {str(e)}")
         return {"success": False, "message": str(e)}
