@@ -34,7 +34,8 @@ SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 # MSG91 Configuration
 MSG91_WIDGET_ID = os.environ.get('MSG91_WIDGET_ID')
 MSG91_AUTH_KEY = os.environ.get('MSG91_AUTH_KEY')
-MSG91_BASE_URL = "https://api.msg91.com/api/v5/widget"
+MSG91_TOKEN_AUTH = os.environ.get('MSG91_TOKEN_AUTH')
+MSG91_OTP_URL = "https://control.msg91.com/api/v5/otp"
 
 # Exotel Configuration
 EXOTEL_API_KEY = os.environ.get('EXOTEL_API_KEY')
